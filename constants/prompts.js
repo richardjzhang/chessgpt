@@ -1,6 +1,6 @@
 function initialChessPrompt({ color, move }) {
   const playerColor = chessColor(color);
-  const computerColor = chessColor(color === "W" ? "B" : "W");
+  const computerColor = chessColor(color === "w" ? "b" : "w");
   return (
     "I would like you to guide me through a game of Chess. " +
     "I will suggest a move, and you will suggest a move in response " +
@@ -11,13 +11,15 @@ function initialChessPrompt({ color, move }) {
     "played the 1st move, then the response should only be e5\n\n" +
     `I will play as '${playerColor}', and you will play as '${computerColor}'\n\n` +
     `${
-      move ? ` My first move is ${move} - respond with just the chess move` : ""
+      move
+        ? ` My first move is ${move} - respond with just the chess move, no text before or after`
+        : "What is your move? Respond with just the chess move, no text before or after"
     }`
   );
 }
 
 const nextMovePrompt = ({ move, possibleMoves }) => {
-  return `My move is ${move}. Based on the following possible moves ${possibleMoves} for you, what is your next move? Like before, respond with just the move, no text before and after.`;
+  return `My move is ${move}. For your next move, only select a move from this list: ${possibleMoves}. What is your next move? Like before, respond with just the move, no text before and after.`;
 };
 
 function chessColor(color) {
