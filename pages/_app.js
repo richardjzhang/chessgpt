@@ -1,9 +1,10 @@
 import "@/styles/globals.css";
+import Layout from "@/components/Layout";
 
 export default function App({ Component, pageProps }) {
   return (
-    <main className="w-screen h-screen bg-gray-900">
+    <Layout>
       <Component {...pageProps} />
-    </main>
+    </Layout>
   );
 }

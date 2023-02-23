@@ -11,7 +11,7 @@ export default function Home() {
   return (
     <>
       <div className="px-10 py-4 w-full h-full flex justify-center items-center">
-        <div className="mb-20 mx-auto max-w-xl w-4/6 flex flex-col items-center">
+        <div className="mx-auto max-w-xl w-full flex flex-col items-center sm:w-8/12">
           {color ? (
             <ChessGame
               playerColor={color}
