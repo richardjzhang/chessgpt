@@ -1,51 +1,29 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Chessboard } from "react-chessboard";
 import { Chess } from "chess.js";
+import useSound from "use-sound";
+import ChessHistory from "@/components/ChessHistory";
 import Logo from "@/components/Logo";
 
 const ChessGame = ({ playerColor, boardOrientation }) => {
   const [game, setGame] = useState(new Chess());
   const [computerMove, setComputerMove] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [normalMoveSound] = useSound("/sounds/normal.mp3");
 
-  useEffect(() => {
-    if (playerColor === "b" && game.history().length === 0) {
-      handleFirstBlackMove();
-      console.log({ playerColor });
-    }
-  }, []);
+  const makeAMove = useCallback(
+    (move) => {
+      const gameCopy = Object.create(game);
+      const result = gameCopy.move(move);
+      setGame(gameCopy);
+      setComputerMove((c) => !c);
+      normalMoveSound();
+      return result; // null if the move was illegal, the move object if the move was legal
+    },
+    [game, normalMoveSound]
+  );
 
-  useEffect(() => {
-    if (computerMove && game.history().length !== 0) {
-      setIsFetching(true);
-      const timeout = setTimeout(makeComputerMove, 200);
-      return () => {
-        clearTimeout(timeout);
-        setIsFetching(false);
-      };
-    }
-  }, [computerMove]);
-
-  function makeAMove(move) {
-    const gameCopy = Object.create(game);
-    const result = gameCopy.move(move);
-    setGame(gameCopy);
-    setComputerMove((c) => !c);
-    return result; // null if the move was illegal, the move object if the move was legal
-  }
-
-  async function handleFirstBlackMove() {
-    setComputerMove(true);
-    setIsFetching(true);
-    const response = await fetch(
-      `/api/chatgpt?color=${playerColor}&isFirstMove=true`
-    );
-    const data = await response.json();
-    makeAMove(data);
-    setIsFetching(false);
-  }
-
-  async function makeComputerMove() {
+  const makeComputerMove = useCallback(async () => {
     let response;
     if (game.history().length === 1 && playerColor === "w") {
       const lastMove = game.history()[game.history().length - 1];
@@ -61,7 +39,18 @@ const ChessGame = ({ playerColor, boardOrientation }) => {
     const data = await response.json();
     makeAMove(data);
     setIsFetching(false);
-  }
+  }, [game, makeAMove, playerColor]);
+
+  const handleFirstBlackMove = useCallback(async () => {
+    setComputerMove(true);
+    setIsFetching(true);
+    const response = await fetch(
+      `/api/chatgpt?color=${playerColor}&isFirstMove=true`
+    );
+    const data = await response.json();
+    makeAMove(data);
+    setIsFetching(false);
+  }, [makeAMove, playerColor]);
 
   function onDrop(sourceSquare, targetSquare) {
     try {
@@ -78,15 +67,44 @@ const ChessGame = ({ playerColor, boardOrientation }) => {
     return true;
   }
 
+  useEffect(() => {
+    if (playerColor === "b" && game.history().length === 0) {
+      handleFirstBlackMove();
+    }
+  }, [handleFirstBlackMove, playerColor, game]);
+
+  useEffect(() => {
+    if (computerMove && game.history().length !== 0) {
+      setIsFetching(true);
+      const timeout = setTimeout(makeComputerMove, 200);
+      return () => {
+        clearTimeout(timeout);
+        setIsFetching(false);
+      };
+    }
+  }, [makeComputerMove, computerMove, game]);
+
   return (
-    <>
+    <div className="w-full flex flex-col items-center">
       <Logo className={`mb-4 ${isFetching ? "animate-spin" : ""}`} />
-      <Chessboard
-        boardOrientation={boardOrientation}
-        position={game.fen()}
-        onPieceDrop={onDrop}
-      />
-    </>
+      <div className="w-full grid gap-20 grid-cols-1 lg:grid-cols-2 lg:h-[31rem]">
+        <div className="w-full max-h-full">
+          {playerColor ? (
+            <Chessboard
+              boardOrientation={boardOrientation}
+              customBoardStyle={{ borderRadius: 12 }}
+              position={game.fen()}
+              onPieceDrop={onDrop}
+            />
+          ) : (
+            <Chessboard customBoardStyle={{ borderRadius: 12 }} />
+          )}
+        </div>
+        <div className="overflow-auto lg:h-[31rem]">
+          <ChessHistory history={game.history()} turn={game.turn()} />
+        </div>
+      </div>
+    </div>
   );
 };
 

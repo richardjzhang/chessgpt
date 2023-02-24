@@ -1,34 +1,31 @@
 import { useState } from "react";
+import Head from "next/head";
 import ChessGame from "@/components/ChessGame";
 import Modal from "@/components/Modal";
-import { Chessboard } from "react-chessboard";
-import Logo from "@/components/Logo";
+import useSound from "use-sound";
 
 export default function Home() {
   const [showModal, setShowModal] = useState(true);
   const [color, setColor] = useState(null);
+  const [gameStartSound] = useSound("/sounds/game-start.mp3");
 
   return (
     <>
-      <div className="px-10 py-4 w-full h-full flex justify-center items-center">
-        <div className="mx-auto max-w-xl w-full flex flex-col items-center sm:w-8/12">
-          {color ? (
-            <ChessGame
-              playerColor={color}
-              boardOrientation={color === "w" ? "white" : "black"}
-            />
-          ) : (
-            <>
-              <Logo className="mb-4" />
-              <Chessboard />
-            </>
-          )}
-        </div>
-      </div>
+      <Head>
+        <title>ChessGPT</title>
+        <meta name="description" content="ChessGPT - Play ChatGPT in Chess!" />
+      </Head>
+      <ChessGame
+        playerColor={color}
+        boardOrientation={color === "w" ? "white" : "black"}
+      />
       <Modal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
-        setColor={(c) => setColor(c)}
+        setColor={(c) => {
+          setColor(c);
+          gameStartSound();
+        }}
       />
     </>
   );
