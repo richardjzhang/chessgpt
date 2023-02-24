@@ -87,7 +87,7 @@ const ChessGame = ({ playerColor, boardOrientation }) => {
   return (
     <div className="w-full flex flex-col items-center">
       <Logo className={`mb-4 ${isFetching ? "animate-spin" : ""}`} />
-      <div className="w-full grid gap-20 grid-cols-1 lg:grid-cols-2 lg:h-[31rem]">
+      <div className="w-full grid gap-10 grid-cols-1 lg:grid-cols-2 lg:h-[31rem] lg:gap-20">
         <div className="w-full max-h-full">
           {playerColor ? (
             <Chessboard
@@ -100,8 +100,13 @@ const ChessGame = ({ playerColor, boardOrientation }) => {
             <Chessboard customBoardStyle={{ borderRadius: 12 }} />
           )}
         </div>
-        <div className="overflow-auto lg:h-[31rem]">
-          <ChessHistory history={game.history()} turn={game.turn()} />
+        <div className="lg:h-[31rem] lg:overflow-auto">
+          <ChessHistory
+            history={game.history()}
+            turn={game.turn()}
+            computerMove={computerMove}
+            playerColor={playerColor}
+          />
         </div>
       </div>
     </div>
