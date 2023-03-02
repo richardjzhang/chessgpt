@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Head from "next/head";
 import ChessGame from "@/components/ChessGame";
-import Modal from "@/components/Modal";
+import PickColorModal from "@/components/PickColorModal";
 import useSound from "use-sound";
 
 export default function Home() {
@@ -15,11 +15,8 @@ export default function Home() {
         <title>ChessGPT</title>
         <meta name="description" content="ChessGPT - Play ChatGPT in Chess!" />
       </Head>
-      <ChessGame
-        playerColor={color}
-        boardOrientation={color === "w" ? "white" : "black"}
-      />
-      <Modal
+      <ChessGame playerColor={color} />
+      <PickColorModal
         isOpen={showModal}
         onClose={() => setShowModal(false)}
         setColor={(c) => {

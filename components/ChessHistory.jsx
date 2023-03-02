@@ -1,9 +1,5 @@
 import React from "react";
 
-function isEven(n) {
-  return n % 2 === 0;
-}
-
 function arrayToPairs(arr) {
   const pairs = arr.reduce((acc, current, index) => {
     if (index % 2 === 0) {
@@ -18,7 +14,24 @@ function arrayToPairs(arr) {
   return [...pairs, []];
 }
 
+function gameStateText(isGameOver, computerMove, isWhiteTurn) {
+  if (isGameOver) {
+    return isWhiteTurn ? "Black wins!" : "White wins!";
+  }
+
+  return computerMove ? "ChatGPT's turn" : "Your turn";
+}
+
+function gameStateColor(isGameOver, isWhiteTurn) {
+  if (isGameOver) {
+    return isWhiteTurn ? "bg-black border border-white/40" : "bg-white";
+  }
+
+  return isWhiteTurn ? "bg-white" : "bg-black border border-white/40";
+}
+
 export default function ChessHistory({
+  isGameOver,
   history,
   turn,
   computerMove,
@@ -30,16 +43,17 @@ export default function ChessHistory({
     <>
       <div className="mb-4 p-4 rounded-lg w-full flex items-center text-xl font-semibold bg-gray-800 text-blue-200 lg:mb-8">
         <div
-          className={`mr-5 w-8 h-8 rounded-md transition-colors duration-500 ${
-            isWhiteTurn ? "bg-white" : "bg-black border border-white/40"
-          }`}
+          className={`mr-5 w-8 h-8 rounded-md transition-colors duration-500 ${gameStateColor(
+            isGameOver,
+            isWhiteTurn
+          )}`}
         />
         <p
           className={`transition-opacity duration-200 ${
             playerColor ? "opacity-100" : "opacity-0"
           }`}
         >
-          {computerMove ? "ChatGPT's" : "Your"} turn
+          {gameStateText(isGameOver, computerMove, isWhiteTurn)}
         </p>
       </div>
       <div className="flex flex-col-reverse">
