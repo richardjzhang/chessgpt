@@ -48,19 +48,15 @@ Possible moves: ${possibleMoves}`;
 };
 
 const invalidMovePrompt = ({ possibleMoves }) => {
-  return `That is not a possible move. Only select a move from this list
+  return `That is not a possible move. Do not respond with the same move, and only select a move from this list
 
 Possible moves: ${possibleMoves}
+
+Your response should be in the following format...
     
-Reply with one of the moves in the list in the following format only. Do not have any extra text before or after the move.
+e.g. Move: e5
 
-e.g.
-// Valid response
-Move: e5
-
-// Invalid response
-Apologies, here is the correct move.
-Move: e5`;
+Reply with one of the moves in the list in the format explained previously.`;
 };
 
 function chessColor(color) {

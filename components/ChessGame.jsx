@@ -25,7 +25,7 @@ const ChessGame = ({ playerColor }) => {
       <div className="mb-8">
         <Logo className={`relative z-10 ${isFetching ? "animate-spin" : ""}`} />
         <div className="flex justify-center ml-16 -mt-7 relative">
-          <div className="px-2 py-0.5 rounded w-fit bg-emerald-500 text-xs font-semibold">
+          <div className="px-2 py-0.5 rounded w-fit bg-emerald-500 text-gray-900 text-xs font-semibold">
             Beta
           </div>
         </div>
