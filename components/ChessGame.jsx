@@ -22,7 +22,14 @@ const ChessGame = ({ playerColor }) => {
 
   return (
     <div className="w-full flex flex-col items-center">
-      <Logo className={`mb-4 ${isFetching ? "animate-spin" : ""}`} />
+      <div className="mb-8">
+        <Logo className={`relative z-10 ${isFetching ? "animate-spin" : ""}`} />
+        <div className="flex justify-center ml-16 -mt-7 relative">
+          <div className="px-2 py-0.5 rounded w-fit bg-emerald-500 text-xs font-semibold">
+            Beta
+          </div>
+        </div>
+      </div>
       <div className="w-full flex flex-col space-y-10 lg:flex lg:h-[31rem] lg:space-x-20 lg:flex-row lg:space-y-0">
         <div className="w-full max-h-full lg:w-full">
           {playerColor ? (

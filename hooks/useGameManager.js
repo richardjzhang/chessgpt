@@ -69,31 +69,32 @@ export default function useGameManager({ playerColor, game, setGame }) {
 
   const makeAMove = useCallback(
     (move) => {
-      const gameCopy = Object.create(game);
-      const result = gameCopy.move(move);
-      setGame(gameCopy);
-      handleSound(move);
-      setComputerMove((c) => !c);
-      return result; // null if the move was illegal, the move object if the move was legal
+      try {
+        const gameCopy = Object.create(game);
+        const result = gameCopy.move(move);
+        setGame(gameCopy);
+        handleSound(move);
+        setComputerMove((c) => !c);
+      } catch {
+        return null;
+      }
     },
     [game, handleSound, setGame]
   );
 
   function onDrop(sourceSquare, targetSquare) {
     if (!game.isGameOver() && !computerMove) {
-      try {
-        makeAMove({
-          from: sourceSquare,
-          to: targetSquare,
-          promotion: "q", // always promote to a queen for example simplicity
-        });
-      } catch (e) {
-        return false;
+      const move = makeAMove({
+        from: sourceSquare,
+        to: targetSquare,
+        promotion: "q", // always promote to a queen for example simplicity
+      });
+      if (move) {
+        setMoveFrom("");
+        setOptionSquares({});
+        return true;
       }
-      return true;
     }
-
-    gameOverSound();
 
     return false;
   }
@@ -104,7 +105,7 @@ export default function useGameManager({ playerColor, game, setGame }) {
       verbose: true,
     });
     if (moves.length === 0) {
-      return;
+      return false;
     }
 
     const newSquares = {};
@@ -123,6 +124,7 @@ export default function useGameManager({ playerColor, game, setGame }) {
       background: "rgba(255, 255, 0, 0.4)",
     };
     setOptionSquares(newSquares);
+    return true;
   }
 
   function onSquareClick(square) {
@@ -130,9 +132,11 @@ export default function useGameManager({ playerColor, game, setGame }) {
       setRightClickedSquares({});
 
       function resetFirstMove(square) {
-        setMoveFrom(square);
-        getMoveOptions(square);
+        const hasOptions = getMoveOptions(square);
+        if (hasOptions) setMoveFrom(square);
       }
+
+      console.log({ moveFrom });
 
       // from square
       if (!moveFrom) {
@@ -141,16 +145,12 @@ export default function useGameManager({ playerColor, game, setGame }) {
       }
 
       // attempt to make move
-      let move;
-      try {
-        move = makeAMove({
-          from: moveFrom,
-          to: square,
-          promotion: "q", // always promote to a queen for example simplicity
-        });
-      } catch (e) {
-        return false;
-      }
+      const move = makeAMove({
+        from: moveFrom,
+        to: square,
+        promotion: "q", // always promote to a queen for example simplicity
+      });
+      console.log({ move });
 
       // if invalid, setMoveFrom and getMoveOptions
       if (move === null) {
@@ -160,7 +160,10 @@ export default function useGameManager({ playerColor, game, setGame }) {
 
       setMoveFrom("");
       setOptionSquares({});
+      return true;
     }
+
+    return false;
   }
 
   function onSquareRightClick(square) {
