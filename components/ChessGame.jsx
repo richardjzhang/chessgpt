@@ -7,7 +7,14 @@ import useGameManager from "@/hooks/useGameManager";
 
 const ChessGame = ({ playerColor }) => {
   const [game, setGame] = useState(new Chess());
-  const { onDrop, isFetching, computerMove } = useGameManager({
+  const {
+    onDrop,
+    isFetching,
+    computerMove,
+    onSquareClick,
+    onSquareRightClick,
+    customSquareStyles,
+  } = useGameManager({
     playerColor,
     game,
     setGame,
@@ -24,6 +31,9 @@ const ChessGame = ({ playerColor }) => {
               customBoardStyle={{ borderRadius: 12 }}
               position={game.fen()}
               onPieceDrop={onDrop}
+              onSquareClick={onSquareClick}
+              onSquareRightClick={onSquareRightClick}
+              customSquareStyles={customSquareStyles}
             />
           ) : (
             <Chessboard customBoardStyle={{ borderRadius: 12 }} />

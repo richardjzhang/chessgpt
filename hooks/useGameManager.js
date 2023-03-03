@@ -4,6 +4,12 @@ import useGameSounds from "@/hooks/useGameSounds";
 export default function useGameManager({ playerColor, game, setGame }) {
   const [computerMove, setComputerMove] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [squareStyles, setSquareStyles] = useState({});
+  const [currentSelectedSquare, setCurrentSelectedSquare] = useState(null);
+  const [moveFrom, setMoveFrom] = useState("");
+  const [rightClickedSquares, setRightClickedSquares] = useState({});
+  const [moveSquares, setMoveSquares] = useState({});
+  const [optionSquares, setOptionSquares] = useState({});
   const {
     playerMoveSound,
     computerMoveSound,
@@ -82,7 +88,6 @@ export default function useGameManager({ playerColor, game, setGame }) {
           promotion: "q", // always promote to a queen for example simplicity
         });
       } catch (e) {
-        console.log(e);
         return false;
       }
       return true;
@@ -91,6 +96,83 @@ export default function useGameManager({ playerColor, game, setGame }) {
     gameOverSound();
 
     return false;
+  }
+
+  function getMoveOptions(square) {
+    const moves = game.moves({
+      square,
+      verbose: true,
+    });
+    if (moves.length === 0) {
+      return;
+    }
+
+    const newSquares = {};
+    moves.map((move) => {
+      newSquares[move.to] = {
+        background:
+          game.get(move.to) &&
+          game.get(move.to).color !== game.get(square).color
+            ? "radial-gradient(circle, rgba(0,0,0,.1) 85%, transparent 85%)"
+            : "radial-gradient(circle, rgba(0,0,0,.1) 25%, transparent 25%)",
+        borderRadius: "50%",
+      };
+      return move;
+    });
+    newSquares[square] = {
+      background: "rgba(255, 255, 0, 0.4)",
+    };
+    setOptionSquares(newSquares);
+  }
+
+  function onSquareClick(square) {
+    if (!game.isGameOver() && !computerMove) {
+      setRightClickedSquares({});
+
+      function resetFirstMove(square) {
+        setMoveFrom(square);
+        getMoveOptions(square);
+      }
+
+      // from square
+      if (!moveFrom) {
+        resetFirstMove(square);
+        return;
+      }
+
+      // attempt to make move
+      let move;
+      try {
+        move = makeAMove({
+          from: moveFrom,
+          to: square,
+          promotion: "q", // always promote to a queen for example simplicity
+        });
+      } catch (e) {
+        return false;
+      }
+
+      // if invalid, setMoveFrom and getMoveOptions
+      if (move === null) {
+        resetFirstMove(square);
+        return;
+      }
+
+      setMoveFrom("");
+      setOptionSquares({});
+    }
+  }
+
+  function onSquareRightClick(square) {
+    const colour = "rgba(0, 0, 255, 0.4)";
+    setRightClickedSquares({
+      ...rightClickedSquares,
+      [square]:
+        rightClickedSquares[square] &&
+        rightClickedSquares[square].backgroundColor === colour
+          ? undefined
+          : { backgroundColor: colour },
+    });
   }
 
   const makeComputerMove = useCallback(async () => {
@@ -130,5 +212,17 @@ export default function useGameManager({ playerColor, game, setGame }) {
     }
   }, [makeComputerMove, computerMove, game, playerColor]);
 
-  return { game, onDrop, isFetching, computerMove };
+  return {
+    game,
+    onDrop,
+    isFetching,
+    computerMove,
+    onSquareClick,
+    onSquareRightClick,
+    customSquareStyles: {
+      ...moveSquares,
+      ...optionSquares,
+      ...rightClickedSquares,
+    },
+  };
 }
