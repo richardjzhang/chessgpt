@@ -14,6 +14,9 @@ export default function Home() {
       <Head>
         <title>ChessGPT</title>
         <meta name="description" content="ChessGPT - Play ChatGPT in Chess!" />
+        <meta property="og:title" content="ChessGPT" />
+        <meta property="og:description" content="Play ChatGPT in Chess!" />
+        <meta property="og:image" content="/open-graph.png" />
       </Head>
       <ChessGame playerColor={color} />
       <PickColorModal
