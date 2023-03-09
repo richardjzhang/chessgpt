@@ -1,38 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## ChessGPT
+
+This is a simple chess game application where you can play chess with ChatGPT, a large language model trained by OpenAI. The application is built using Next.js and deployed on Vercel.
 
 ## Getting Started
 
-First, run the development server:
+To play the game, simply visit the deployed [website](https://chessgpt.richardjzhang.com). The game should be playable directly from your browser.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+To run the game locally, you'll need to have Node.js and pnpm installed on your machine, and also have an OpenAI account. Here's how to get started:
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+1. Clone this repository to your local machine.
+2. Navigate to the cloned repository directory in your terminal.
+3. Run `pnpm install` to install the required dependencies.
+4. You will need to add your `OPENAI_API_KEY` to the `env` file
+5. Run `pnpm dev` to start the development server.
+6. Open your browser and navigate to http://localhost:3000 to play the game.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+## Acknowledgments
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+This application was built as a fun project to showcase the capabilities of Next.js and ChatGPT. The chess engine used in this application is [chess.js](https://github.com/jhlywa/chess.js), and the chessboard is rendered using [react-chessboard](https://github.com/Clariity/react-chessboard). Thanks to the developers of these libraries for making this project possible!
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+If you'd like to contribute to this project, feel free to submit a pull request or open an issue. We welcome all contributions and ideas!
 
-## Learn More
+## License
 
-To learn more about Next.js, take a look at the following resources:
+This project is licensed under the MIT license. See the LICENSE file for more information.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Other notable projects
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+You should also consider checking out the following other projects that did something similar!
 
-## Deploy on Vercel
+**ChessGPT by GDUcrash**
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Website: https://chessgpt.gducrash.com/
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+Repositories:
+
+- [chessgpt-server](https://github.com/GDUcrash?tab=repositories#:~:text=Sort-,chessgpt%2Dserver,-Public)
+- [chessgpt-client](https://github.com/GDUcrash/chessgpt-client)
