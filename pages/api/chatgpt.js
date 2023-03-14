@@ -74,7 +74,8 @@ export default async function handler(req, res) {
   while (
     possibleMoves.length > 0 &&
     !possibleMoves.includes(nextMove) &&
-    i < MAX_RETRIES
+    i < MAX_RETRIES &&
+    !isFirstMove
   ) {
     response = await api.sendMessage(invalidMovePrompt({ possibleMoves }), {
       parentMessageId,

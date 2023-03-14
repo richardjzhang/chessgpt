@@ -22,15 +22,7 @@ const nextMovePrompt = ({ move }) => {
 };
 
 const invalidMovePrompt = ({ possibleMoves }) => {
-  return `That is not a possible move. Do not respond with the same move, and only select a move from this list
-
-Possible moves: ${possibleMoves}
-
-Your response should be in the following format...
-    
-e.g. Move: e5
-
-Reply with one of the moves in the list in the format explained previously.`;
+  return `That is not a possible move. Do not respond with the same move, and only select a move from the list ${possibleMoves}`;
 };
 
 function chessColor(color) {
