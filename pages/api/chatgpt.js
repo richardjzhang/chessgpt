@@ -63,7 +63,7 @@ export default async function handler(req, res) {
   // Send the prompt to ChatGPT
   const prompt = isFirstMove
     ? initialChessPrompt({ color, move })
-    : nextMovePrompt({ move, possibleMoves });
+    : nextMovePrompt({ move });
   let response = await api.sendMessage(prompt, { parentMessageId });
   parentMessageId = response.id;
 
