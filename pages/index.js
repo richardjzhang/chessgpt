@@ -1,13 +1,20 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import ChessGame from "@/components/ChessGame";
+import EnterInfoModal from "@/components/EnterInfoModal";
 import PickColorModal from "@/components/PickColorModal";
-import useSound from "use-sound";
+import { useOpenAiApiKey } from "@/context/AppContext";
+import useGameSounds from "@/hooks/useGameSounds";
 
 export default function Home() {
-  const [showModal, setShowModal] = useState(true);
+  const { apiKey, setApiKey } = useOpenAiApiKey();
+  const [showPickColorModal, setShowPickColorModal] = useState(!!apiKey);
   const [color, setColor] = useState(null);
-  const [gameStartSound] = useSound("/sounds/game-start.mp3");
+  const { gameStartSound } = useGameSounds();
+
+  useEffect(() => {
+    if (apiKey) setShowPickColorModal(true);
+  }, [apiKey]);
 
   return (
     <>
@@ -19,9 +26,10 @@ export default function Home() {
         <meta property="og:image" content="/open-graph.png" />
       </Head>
       <ChessGame playerColor={color} />
+      <EnterInfoModal isOpen={!apiKey} setApiKey={setApiKey} />
       <PickColorModal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
+        isOpen={showPickColorModal}
+        onClose={() => setShowPickColorModal(false)}
         setColor={(c) => {
           setColor(c);
           gameStartSound();

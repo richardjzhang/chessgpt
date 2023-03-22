@@ -11,7 +11,7 @@ To run the game locally, you'll need to have Node.js and pnpm installed on your 
 1. Clone this repository to your local machine.
 2. Navigate to the cloned repository directory in your terminal.
 3. Run `pnpm install` to install the required dependencies.
-4. You will need to add your `OPENAI_API_KEY` to the `env` file
+4. You will need to add your OpenAI API key to the variable `NEXT_PUBLIC_OPENAI_API_KEY` in the `env.local` file
 5. Run `pnpm dev` to start the development server.
 6. Open your browser and navigate to http://localhost:3000 to play the game.
 

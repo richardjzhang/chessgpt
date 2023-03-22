@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import useGameSounds from "@/hooks/useGameSounds";
+import { useOpenAiApiKey } from "@/context/AppContext";
 
 export default function useGameManager({ playerColor, game, setGame }) {
+  const { apiKey } = useOpenAiApiKey();
   const [computerMove, setComputerMove] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [squareStyles, setSquareStyles] = useState({});
@@ -19,6 +21,8 @@ export default function useGameManager({ playerColor, game, setGame }) {
     castleSound,
     promoteSound,
   } = useGameSounds();
+
+  const BASE_API_URL = `/api/chatgpt?apiKey=${apiKey}`;
 
   const handleSound = useCallback(() => {
     const totalMoves = game.history().length;
@@ -136,8 +140,6 @@ export default function useGameManager({ playerColor, game, setGame }) {
         if (hasOptions) setMoveFrom(square);
       }
 
-      console.log({ moveFrom });
-
       // from square
       if (!moveFrom) {
         resetFirstMove(square);
@@ -150,7 +152,6 @@ export default function useGameManager({ playerColor, game, setGame }) {
         to: square,
         promotion: "q", // always promote to a queen for example simplicity
       });
-      console.log({ move });
 
       // if invalid, setMoveFrom and getMoveOptions
       if (move === null) {
@@ -182,23 +183,25 @@ export default function useGameManager({ playerColor, game, setGame }) {
     let response;
     if (game.history().length === 0 && playerColor === "b") {
       response = await fetch(
-        `/api/chatgpt?color=${playerColor}&isFirstMove=true`
+        `${BASE_API_URL}&color=${playerColor}&isFirstMove=true`
       );
     } else if (game.history().length === 1 && playerColor === "w") {
       const lastMove = game.history()[game.history().length - 1];
       response = await fetch(
-        `/api/chatgpt?move=${lastMove}&color=${playerColor}&isFirstMove=true`
+        `${BASE_API_URL}&move=${lastMove}&color=${playerColor}&isFirstMove=true`
       );
     } else {
       const lastMove = game.history()[game.history().length - 1];
       response = await fetch(
-        `/api/chatgpt?move=${lastMove}&possibleMoves=${game.moves().join(", ")}`
+        `${BASE_API_URL}&move=${lastMove}&possibleMoves=${game
+          .moves()
+          .join(", ")}`
       );
     }
     const data = await response.json();
     makeAMove(data);
     setIsFetching(false);
-  }, [game, makeAMove, playerColor]);
+  }, [BASE_API_URL, game, makeAMove, playerColor]);
 
   useEffect(() => {
     if (game.history().length === 0 && playerColor === "b") {

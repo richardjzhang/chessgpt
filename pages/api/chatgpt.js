@@ -7,9 +7,10 @@ import {
 
 let parentMessageId;
 const MAX_RETRIES = 10;
-const api = new ChatGPTAPI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
+const api = (apiKey) =>
+  new ChatGPTAPI({
+    apiKey,
+  });
 
 function parseMove(move) {
   return move.split("Move: ")[1];
@@ -26,7 +27,11 @@ function isValidChessMove(move) {
   return pattern.test(move);
 }
 
-function validateParams({ move, color, possibleMoves, isFirstMove }) {
+function validateParams({ apiKey, move, color, possibleMoves, isFirstMove }) {
+  if (typeof apiKey !== "string") {
+    throw new Error("Invalid API key");
+  }
+
   if (typeof isFirstMove !== "boolean") {
     throw new Error("Invalid isFirstMove");
   }
@@ -48,13 +53,13 @@ function validateParams({ move, color, possibleMoves, isFirstMove }) {
 }
 
 export default async function handler(req, res) {
-  const { color } = req.query;
+  const { apiKey, color } = req.query;
   const isFirstMove = JSON.parse(req.query.isFirstMove || false);
   const possibleMoves = parsePossibleMoves(req.query.possibleMoves);
   const move = req.query.move?.trim();
 
   // Validate the params passed in before proceeding
-  validateParams({ move, color, possibleMoves, isFirstMove });
+  validateParams({ apiKey, move, color, possibleMoves, isFirstMove });
 
   if (isFirstMove) {
     parentMessageId = undefined;
@@ -64,7 +69,7 @@ export default async function handler(req, res) {
   const prompt = isFirstMove
     ? initialChessPrompt({ color, move })
     : nextMovePrompt({ move });
-  let response = await api.sendMessage(prompt, { parentMessageId });
+  let response = await api(apiKey).sendMessage(prompt, { parentMessageId });
   parentMessageId = response.id;
 
   let nextMove = parseMove(response.text);
@@ -77,9 +82,12 @@ export default async function handler(req, res) {
     i < MAX_RETRIES &&
     !isFirstMove
   ) {
-    response = await api.sendMessage(invalidMovePrompt({ possibleMoves }), {
-      parentMessageId,
-    });
+    response = await api(apiKey).sendMessage(
+      invalidMovePrompt({ possibleMoves }),
+      {
+        parentMessageId,
+      }
+    );
     parentMessageId = response.id;
     nextMove = parseMove(response.text);
     i++;
