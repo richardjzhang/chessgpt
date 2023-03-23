@@ -32,8 +32,8 @@ const ChessGame = ({ playerColor }) => {
       </div>
       <div className="mb-6 p-4 rounded-lg w-full flex items-center text-center font-semibold bg-gray-800 text-yellow-200">
         OpenAI is currently experiencing a heavy amount of traffic, so the game
-        may pause unexpectedly as we may not receive a response 😅. Apologies
-        for the inconvenience!
+        may stop unexpectedly as we may not receive a response 😅. Apologies for
+        the inconvenience!
       </div>
       <div className="w-full flex flex-col space-y-10 lg:flex lg:h-[31rem] lg:space-x-20 lg:flex-row lg:space-y-0">
         <div className="w-full max-h-full lg:w-full">

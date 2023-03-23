@@ -33,7 +33,7 @@ export default function EnterInfoModal({ isOpen, setApiKey }) {
           If you&apos;re unsure how to get an API key, you can find more details{" "}
           <Link
             className="underline"
-            href="https://www.windowscentral.com/software-apps/how-to-get-an-openai-api-key"
+            href="https://elephas.app/blog/how-to-create-openai-api-keys-cl5c4f21d281431po7k8fgyol0"
             target="_blank"
           >
             here
