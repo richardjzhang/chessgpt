@@ -199,7 +199,7 @@ export default function useGameManager({ playerColor, game, setGame }) {
       );
     }
     const data = await response.json();
-    makeAMove(data);
+    makeAMove(data.nextMove);
     setIsFetching(false);
   }, [BASE_API_URL, game, makeAMove, playerColor]);
 

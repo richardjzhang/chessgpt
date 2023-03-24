@@ -54,12 +54,18 @@ function validateParams({ apiKey, move, color, possibleMoves, isFirstMove }) {
 
 export default async function handler(req, res) {
   const { apiKey, color } = req.query;
-  const isFirstMove = JSON.parse(req.query.isFirstMove || false);
   const possibleMoves = parsePossibleMoves(req.query.possibleMoves);
   const move = req.query.move?.trim();
+  const isFirstMove = JSON.parse(req.query.isFirstMove || false);
 
   // Validate the params passed in before proceeding
-  validateParams({ apiKey, move, color, possibleMoves, isFirstMove });
+  validateParams({
+    apiKey,
+    move,
+    color,
+    possibleMoves,
+    isFirstMove,
+  });
 
   if (isFirstMove) {
     parentMessageId = undefined;
@@ -93,5 +99,5 @@ export default async function handler(req, res) {
     i++;
   }
 
-  res.status(200).json(nextMove);
+  res.status(200).json({ nextMove });
 }
